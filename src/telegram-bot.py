@@ -101,7 +101,7 @@ def echo(update: Update, context: CallbackContext) -> None:
        # message = update.message.text
         #if message:
        # twitter.status(message)
-        response = client.create_tweet(text=update.message.text)
+        response = twitter.create_tweet(text=update.message.text)
        # update.message.reply_text(message or update.message.text)
        # logger.info(message or update.message.text)
 
