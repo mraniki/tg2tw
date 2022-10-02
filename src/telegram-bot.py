@@ -1,6 +1,5 @@
 import argparse
 import logging
-from os import getenv
 
 from telegram import Update
 from telegram.error import TelegramError
@@ -8,8 +7,8 @@ from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater)
 
 from messageFormatter import format
-from system import get_ip, ping
 from twitter import Twitter
+import tweepy
 
 # Enable logging
 logging.basicConfig(
@@ -27,7 +26,6 @@ TELEGRAM_TWITTER_TOKEN_SECRET = getenv("TELEGRAM_TWITTER_TOKEN_SECRET")
 TELEGRAM_TWITTER_BOT_TOKEN = getenv("TELEGRAM_TWITTER_BOT_TOKEN")
 TELEGRAM_TWITTER_USER_ID = getenv("TELEGRAM_TWITTER_USER_ID")
 
-INTERFACE_NAME = getenv("INTERFACE_NAME")
 
 parser = argparse.ArgumentParser(
     description="Script to download files from Telegram Channel.")
@@ -55,10 +53,6 @@ parser.add_argument("--user-id",
                     required=False,
                     type=int,
                     default=TELEGRAM_TWITTER_USER_ID)
-parser.add_argument("--interface-name",
-                    required=False,
-                    type=str,
-                    default=INTERFACE_NAME or 'eth0')
 args = parser.parse_args()
 
 consumer_key = args.consumer_key
@@ -67,12 +61,11 @@ access_token = args.access_token
 access_token_secret = args.access_token_secret
 bot_token = args.bot_token
 user_id = args.user_id
-interface_name = args.interface_name
 
 if not user_id:
     logger.warning('user_id not set, you will not be able to tweet')
 
-twitter = Twitter(consumer_key, consumer_secret, access_token,
+twitter = tweepy.Client(consumer_key, consumer_secret, access_token,
                   access_token_secret)
 
 
@@ -109,64 +102,19 @@ def echo(update: Update, context: CallbackContext) -> None:
         return
 
     try:
-        message = update.message.text
+       # message = update.message.text
         #if message:
-        twitter.status(message)
-        update.message.reply_text(message or update.message.text)
-        logger.info(message or update.message.text)
+       # twitter.status(message)
+        response = client.create_tweet(text=update.message.text)
+       # update.message.reply_text(message or update.message.text)
+       # logger.info(message or update.message.text)
 
     except Exception as e:
         logger.exception(e)
         update.message.reply_text(str(e))
 
 
-        
-def command_ip(update: Update, context: CallbackContext) -> None:
-    if update.effective_user.id != user_id:
-        update.message.reply_text("You are not authorized to use this bot.")
-        return
-    callback_ip(context)
-
-
-def callback_ip(context: CallbackContext):
-    try:
-        message = f'IP: {get_ip(interface_name)}'
-        logger.info(message)
-        context.bot.send_message(
-            chat_id=user_id,
-            text=message
-        )
-    except Exception as e:
-        logger.exception(e)
-        context.bot.send_message(
-            chat_id=user_id,
-            text=str(e)
-        )
-
-
-def command_ping(update: Update, context: CallbackContext) -> None:
-    if update.effective_user.id != user_id:
-        update.message.reply_text("You are not authorized to use this bot.")
-        return
-    callback_ping(context)
-
-
-def callback_ping(context: CallbackContext):
-    try:
-        message = f'Ping: {ping()}'
-        logger.info(message)
-        context.bot.send_message(
-            chat_id=user_id,
-            text=message
-        )
-    except Exception as e:
-        logger.exception(e)
-        context.bot.send_message(
-            chat_id=user_id,
-            text=str(e)
-        )
-
-
+   
 def main():
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -181,8 +129,6 @@ def main():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("id", get_id))
-    dispatcher.add_handler(CommandHandler("ip", command_ip))
-    dispatcher.add_handler(CommandHandler("ping", command_ping))
 
     # on noncommand i.e message - echo the message on Telegram
     dispatcher.add_handler(
