@@ -119,6 +119,7 @@ def echo(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(str(e))
 
 
+        
 def command_ip(update: Update, context: CallbackContext) -> None:
     if update.effective_user.id != user_id:
         update.message.reply_text("You are not authorized to use this bot.")
