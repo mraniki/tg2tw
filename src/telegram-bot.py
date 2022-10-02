@@ -13,7 +13,7 @@ import tweepy
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+TELEGRAM_TWITTER_BEARER_TOKEN = getenv("TELEGRAM_TWITTER_BEARER_TOKEN")
 TELEGRAM_TWITTER_CONSUMER_KEY = getenv("TELEGRAM_TWITTER_CONSUMER_KEY")
 TELEGRAM_TWITTER_CONSUMER_SECRET = getenv("TELEGRAM_TWITTER_CONSUMER_SECRET")
 TELEGRAM_TWITTER_ACCESS_TOKEN = getenv("TELEGRAM_TWITTER_ACCESS_TOKEN")
@@ -25,6 +25,10 @@ TELEGRAM_TWITTER_USER_ID = getenv("TELEGRAM_TWITTER_USER_ID")
 
 parser = argparse.ArgumentParser(
     description="Script to download files from Telegram Channel.")
+parser.add_argument("--bearer-token",
+                    required=TELEGRAM_TWITTER_BEARER_TOKEN == None,
+                    type=str,
+                    default=TELEGRAM_TWITTER_BEARER_TOKEN)
 parser.add_argument("--consumer-key",
                     required=TELEGRAM_TWITTER_CONSUMER_KEY == None,
                     type=str,
@@ -51,6 +55,7 @@ parser.add_argument("--user-id",
                     default=TELEGRAM_TWITTER_USER_ID)
 args = parser.parse_args()
 
+bearer_token = args.bearer_token
 consumer_key = args.consumer_key
 consumer_secret = args.consumer_secret
 access_token = args.access_token
