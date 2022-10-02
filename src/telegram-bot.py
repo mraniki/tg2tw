@@ -7,7 +7,7 @@ from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater)
 
 from messageFormatter import format
-from twitter import Twitter
+#from twitter import Twitter
 import tweepy
 
 # Enable logging
