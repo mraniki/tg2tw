@@ -69,10 +69,10 @@ if not user_id:
 #twitter = tweepy.Client(consumer_key, consumer_secret, access_token, access_token_secret)
 #twitter = tweepy.Client(bearer_token)
 
-def send_tweet(tweepy_client, tweet, reply_tweet_id=""):
-    if not reply_tweet_id:
+def send_tweet(tweepy_client, tweet):
+   # if not reply_tweet_id:
         return tweepy_client.create_tweet(text=tweet)
-    return tweepy_client.create_tweet(text=tweet, in_reply_to_tweet_id=reply_tweet_id)
+   # return tweepy_client.create_tweet(text=tweet, in_reply_to_tweet_id=reply_tweet_id)
 
 def create_tweepy_client(consumer_key, consumer_secret, access_token, access_token_secret):
         return tweepy.Client(
