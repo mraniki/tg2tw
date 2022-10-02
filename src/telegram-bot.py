@@ -67,7 +67,21 @@ if not user_id:
     logger.warning('user_id not set, you will not be able to tweet')
 
 #twitter = tweepy.Client(consumer_key, consumer_secret, access_token, access_token_secret)
-twitter = tweepy.Client(bearer_token)
+#twitter = tweepy.Client(bearer_token)
+
+def send_tweet(tweepy_client, tweet, reply_tweet_id=""):
+    if not reply_tweet_id:
+        return tweepy_client.create_tweet(text=tweet)
+    return tweepy_client.create_tweet(text=tweet, in_reply_to_tweet_id=reply_tweet_id)
+
+def create_tweepy_client(consumer_key, consumer_secret, access_token, access_token_secret):
+        return tweepy.Client(
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            access_token=access_token,
+            access_token_secret=access_token_secret
+        )
+tweepy_client = create_tweepy_client(consumer_key, consumer_secret, access_token, access_token_secret)
 
 def error_handler(update: Update, context: CallbackContext):
     try:
@@ -105,7 +119,8 @@ def echo(update: Update, context: CallbackContext) -> None:
        # message = update.message.text
         #if message:
        # twitter.status(message)
-        response = twitter.create_tweet(text=update.message.text)
+       # response = twitter.create_tweet(text=update.message.text)
+         send_tweet(tweepy_client, update.message.text)
        # update.message.reply_text(message or update.message.text)
        # logger.info(message or update.message.text)
 
