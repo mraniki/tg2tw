@@ -66,9 +66,8 @@ user_id = args.user_id
 if not user_id:
     logger.warning('user_id not set, you will not be able to tweet')
 
-twitter = tweepy.Client(consumer_key, consumer_secret, access_token,
-                  access_token_secret)
-
+#twitter = tweepy.Client(consumer_key, consumer_secret, access_token, access_token_secret)
+twitter = tweepy.Client(bearer_token)
 
 def error_handler(update: Update, context: CallbackContext):
     try:
