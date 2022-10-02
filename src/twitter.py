@@ -10,11 +10,11 @@ class Twitter:
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
 
-        self._api = tweepy.API(auth)
+        client = tweepy.Client(auth)
 
     def status(message) -> None:
         # If the application settings are set for "Read and Write" then
         # this line should tweet out the message to your account's
         # timeline. The "Read and Write" setting is on https://dev.twitter.com/apps
        # self._api.update_status(status=message)
-         self._api.create_tweet(text=message)
+         client.create_tweet(text=message)
